@@ -27,4 +27,5 @@ By leveraging the latest in AI and machine learning technologies, this agent not
 **Agent Design**
 
 Here is an overview of the AI Briefing Agent's structure:
+
 <img width="893" alt="AI_Briefing_Agent" src="https://github.com/liuxiaojiao/AI-Briefing/assets/20779552/e78fae9a-3e09-4c72-9436-a79ce96eab27">
