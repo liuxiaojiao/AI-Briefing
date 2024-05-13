@@ -11,7 +11,6 @@ load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 # Create the llm
 llm_35_turbo = ChatOpenAI(api_key=openai_api_key, model='gpt-3.5-turbo')
-# llm = ChatOpenAI(model='gpt-3.5') # Loading GPT-3.5 instead of GPT-4
 
 
 class AI_Briefing_Agents():

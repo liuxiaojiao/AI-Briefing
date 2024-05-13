@@ -24,7 +24,7 @@ class PaperScraperDigestorTools():
     @tool('arXiv paper scraping and summarization')
     def arxiv_paper_search_digestion(category: str):
         """
-        Scrape the abstracts from the latest 50 papers published in the arXiv - cs:AI category, 
+        Scrape the abstracts from the latest 30 papers published in the arXiv - cs:AI category, 
         meticulously extracting pivotal findings and trends.
         """
         search = arxiv.Search(
@@ -85,11 +85,6 @@ class PaperScraperDigestorTools():
         #         f.write(finding + '\n')
 
         return "\n\n".join(important_findings)
-
-
-# if __name__ == '__main__':
-#     findings_summary = PaperScraperDigestorTools().arxiv_paper_search_digestion(tool_input='cs.AI')
-#     print(findings_summary)
 
 
    

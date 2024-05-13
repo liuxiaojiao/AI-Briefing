@@ -150,7 +150,3 @@ class TopVoiceScraperCuratorTools():
         return "\n\n".join(important_findings)
 
 
-# if __name__ == "__main__":
-#     # webpage = "https://www.deeplearning.ai/the-batch/tag/letters/"
-#     important_findings = TopVoiceScraperCuratorTools().top_voice_curation(top_voice_source = 'deeplearning.ai')
-
