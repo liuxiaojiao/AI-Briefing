@@ -10,7 +10,7 @@ class AI_Briefing_Tasks():
         Conduct a comprehensive analysis of the latest advancements in AI in 2024 through online search. Identify key trends, breakthrough technologies, and potential industry impacts. 
         Your final answer MUST deliver a detailed report on AI emerging trends and innovations. 
         {self.__tip_section()}'''),
-        expected_output="Full analysis report in bullet points",
+        expected_output=("Full analysis report in bullet points"),
         agent=agent)
 
   def ai_paper_digestion(self, agent, paper_category):
@@ -21,7 +21,8 @@ class AI_Briefing_Tasks():
 
         Paper Category: {paper_category}
         '''),
-        expected_output="Full analysis report in bullet points",
+        expected_output=("Full analysis report in bullet points"),
+        async_execution=True,
         agent=agent) 
   
   def ai_top_voice_curation(self, agent, top_voice_source):
@@ -31,7 +32,8 @@ class AI_Briefing_Tasks():
         {self.__tip_section()}
 
         AI top voice source: {top_voice_source}'''),
-        expected_output="Full analysis report in bullet points",
+        expected_output=("Full analysis report in bullet points"),
+        async_execution=True,
         agent=agent) 
 
   def ai_content_generation(self, agent):
@@ -40,7 +42,7 @@ class AI_Briefing_Tasks():
         Your post should be informative yet accessible, catering to a tech-savvy audience.
         Your final deliverable MUST clearly present the latest trends and advancements in AI development and industrial application. 
         {self.__tip_section()}'''),
-        expected_output="Detailed full blog post of at least 5 paragraphs",
+        expected_output=("Detailed full blog post of at least 5 paragraphs"),
         agent=agent) 
 
   def __tip_section(self):

@@ -13,6 +13,7 @@ from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import os
+from crewai_tools import BaseTool
 
 # Load the .env file
 load_dotenv()
@@ -22,19 +23,22 @@ openai_api_key = os.getenv('OPENAI_API_KEY')
 llm_35_turbo = ChatOpenAI(api_key=openai_api_key, model='gpt-3.5-turbo') # Loading GPT-3.5-turbo model
 
 
-class TopVoiceScraperCuratorTools():
+class TopVoiceScraperCuratorTools(BaseTool):
+    name: str = 'deeplearning.ai top voice scraping and summarization tool'
+    description: str = ('A tool to scrape and summarize the articles authored by leading voices from AI top voice source - deeplearning.ai.\
+                        extracting key findings and trends related to AI development and its industrial applications. ')
 
-    def __generate_webpage_url_list(webpage_url):
+    def __generate_webpage_url_list(self, webpage_url):
         '''
         Get a list of webpages to scrape
         '''
         webpage_url_list = [webpage_url]
-        for index in range(1, 10):
+        for index in range(1, 16):
             webpage_url_list.append(f"https://www.deeplearning.ai/the-batch/tag/letters/page/{index}/")
         
         return webpage_url_list
 
-    def __generate_article_urls(webpage_url):
+    def __generate_article_urls(self,webpage_url):
         '''
         get article's URL from the webpage
         '''
@@ -62,7 +66,7 @@ class TopVoiceScraperCuratorTools():
 
         return articles_urls_dict
 
-    def __generate_article_content(article_url):
+    def __generate_article_content(self,article_url):
         '''
         Get the article content from its URL
         '''
@@ -83,8 +87,8 @@ class TopVoiceScraperCuratorTools():
 
         return article_body
     
-    @tool('deeplearning.ai top voice scraping and summarization')
-    def top_voice_curation(top_voice_source: str):
+    # @tool('deeplearning.ai top voice scraping and summarization')
+    def _run(self, top_voice_source: str) -> str:
         '''
         Scrape the articles authored by leading voices from AI top voice source - deeplearning.ai, \
         extracting key findings and trends related to AI development and its industrial applications. \
@@ -95,16 +99,16 @@ class TopVoiceScraperCuratorTools():
         else:
             print('deeplearning.ai webpage not provided')
 
-        webpage_url_list = TopVoiceScraperCuratorTools.__generate_webpage_url_list(webpage_url=webpage)
+        webpage_url_list = self.__generate_webpage_url_list(webpage_url=webpage)
 
         df_list = []
 
         for webpage_url in webpage_url_list:
-            articles_urls_dict = TopVoiceScraperCuratorTools.__generate_article_urls(webpage_url)
+            articles_urls_dict = self.__generate_article_urls(webpage_url)
 
             article_content_list = []
             for article_url in articles_urls_dict['url']:
-                article_content = TopVoiceScraperCuratorTools.__generate_article_content(article_url)
+                article_content = self.__generate_article_content(article_url)
                 article_content_list.append(article_content)
             
             articles_urls_dict['content'] = article_content_list
@@ -120,7 +124,7 @@ class TopVoiceScraperCuratorTools():
         print("Total number of articles extracted : ", final_df.shape[0])
 
         important_findings = []
-        for chunk in final_df['content'].head(15):
+        for chunk in final_df['content']:
             
             agent = Agent(
                 role='Principal Researcher',
@@ -134,7 +138,8 @@ class TopVoiceScraperCuratorTools():
             task = Task(
                 agent=agent,
                 description=f'Distill the content below into elegantly presented and digestible insights, \
-                Return the most significant trends and advancements in AI development and industrial application.\n\nCONTENT\n----------\n{chunk}'
+                Return the most significant trends and advancements in AI development and industrial application.\n\nCONTENT\n----------\n{chunk}',
+                expected_output=("Full analysis report in bullet points"),
             )
 
             findings = task.execute()
@@ -148,5 +153,4 @@ class TopVoiceScraperCuratorTools():
                 f.write(finding + '\n')
 
         return "\n\n".join(important_findings)
-
 

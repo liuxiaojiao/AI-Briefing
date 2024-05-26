@@ -44,7 +44,8 @@ class AI_Briefing_Crew:
         tasks=[
             ai_paper_digestion_task, ai_innovation_research_task, ai_top_voice_curation_task, ai_content_generation_task
             ],
-        verbose=True
+        verbose=True,
+        memory=True
     )
 
     result = crew.kickoff()
@@ -53,25 +54,34 @@ class AI_Briefing_Crew:
 if __name__ == "__main__":
     print("## Welcome to AI Briefing Crew")
     print('-------------------------------')
-    paper_category = input(
-        dedent("""
-        What paper category do you want to scrape and analyze?
-        """))
+    # paper_category = input(
+    #     dedent("""
+    #     What paper category do you want to scrape and analyze?
+    #     """))
     
-    top_voice_source = input(
-        dedent("""
-        What website do you want to scrape and analyze for top voice?
-        """))
+    # top_voice_source = input(
+    #     dedent("""
+    #     What website do you want to scrape and analyze for top voice?
+    #     """))
 
-    ai_briefing_crew = AI_Briefing_Crew(paper_category, top_voice_source)
-    result = ai_briefing_crew.run()
-    print("\n\n########################")
+    # ai_briefing_crew = AI_Briefing_Crew(paper_category, top_voice_source)
+    # result = ai_briefing_crew.run()
+    # print("\n\n########################")
 
-    print("## Here is your AI briefing letter:")
-    print("########################\n")
+    # print("## Here is your AI briefing letter:")
+    # print("########################\n")
+    # print(result)
+
+    user_inputs = {
+        'paper_category': 'cs.AI',
+        'top_voice_source': 'deeplearning.ai'
+    }
+
+    result = AI_Briefing_Crew(paper_category = user_inputs['paper_category'], 
+                          top_voice_source = user_inputs['top_voice_source']).run()
+
     print(result)
-
-    # Save the output to a .txt file
+    # # Save the output to a .txt file
     dt_today = datetime.now().date()
     with open(f'output/AI_Briefing_{dt_today}.txt', 'w') as f:
         f.write(result)

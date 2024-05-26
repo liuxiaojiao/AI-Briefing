@@ -1,5 +1,5 @@
 '''
-Use arXiv API to scrape the latest paper abstracts published on arXiv - cs:AI 
+Customize a tool for the agent: Use arXiv API to scrape the latest paper abstracts published on arXiv - cs:AI 
 Summarize the major findings.
 '''
 
@@ -11,6 +11,7 @@ from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import os
+from crewai_tools import BaseTool
 
 # Load the .env file
 load_dotenv()
@@ -20,18 +21,20 @@ openai_api_key = os.getenv('OPENAI_API_KEY')
 llm_35_turbo = ChatOpenAI(api_key=openai_api_key, model='gpt-3.5-turbo') # Loading GPT-3.5-turbo model
 
 
-class PaperScraperDigestorTools():
-    @tool('arXiv paper scraping and summarization')
-    def arxiv_paper_search_digestion(category: str):
+class PaperScraperDigestorTools(BaseTool):
+    name: str = 'arXiv Paper Scraper Digestor Tool'
+    description: str = ('A tool to scrape and summarize the latest arXiv papers abstracts')
+
+    def _run(self, category: str) -> str:
         """
-        Scrape the abstracts from the latest 30 papers published in the arXiv - cs:AI category, 
+        Scrape the abstracts from the latest 50 papers published in the arXiv - cs:AI category, 
         meticulously extracting pivotal findings and trends.
         """
         search = arxiv.Search(
             # scrape the latest papers published on arXiv - cs:AI
             query = category,
-            # scrape the latest 30 papers
-            max_results = 30,
+            # scrape the latest 50 papers
+            max_results = 50,
             # sort the papers by the date they were submitted
             sort_by = arxiv.SortCriterion.SubmittedDate,
             sort_order = arxiv.SortOrder.Descending
@@ -56,7 +59,7 @@ class PaperScraperDigestorTools():
         print("Number of papers extracted : ", df.shape[0])
 
         important_findings = []
-        for chunk in df['Abstract'].head(15):
+        for chunk in df['Abstract']:
 
             agent = Agent(
                     role='Principal Researcher',
@@ -71,7 +74,8 @@ class PaperScraperDigestorTools():
             task = Task(
                     agent=agent,
                     description=
-                    f'Extract important findings and translate these complex research outcomes into clear, digestible insights from the content below.\n\nCONTENT\n-----\n{chunk}'
+                    f'Extract important findings and translate these complex research outcomes into clear, digestible insights from the content below.\n\nCONTENT\n-----\n{chunk}',
+                    expected_output=("Full analysis report in bullet points")
                 )
 
             findings = task.execute()
@@ -80,9 +84,9 @@ class PaperScraperDigestorTools():
         # print(important_findings)
 
         # Save the output to a .txt file
-        # with open('output/important_findings_AI_paper.txt', 'w') as f:
-        #     for finding in important_findings:
-        #         f.write(finding + '\n')
+        with open('output/important_findings_AI_paper.txt', 'w') as f:
+            for finding in important_findings:
+                f.write(finding + '\n')
 
         return "\n\n".join(important_findings)
 
